@@ -1,0 +1,50 @@
+<ion-modal-view class="jw-casting-expanded-controller-modal" ng-style="{backgroundImage: 'url(' + vm.mediaInfo.image + ')'}">
+  <div class="jw-casting-expanded-controller-shadow"></div>
+  <ion-header-bar>
+    <span class="jwy-icon-angle-down" ng-click="vm.hideModal()"></span>
+    <h1 class="title">{{vm.mediaInfo.title}}</h1>
+  </ion-header-bar>
+  <div class="jw-casting-expanded-controller-content">
+    <div class="jw-casting-expanded-controller-target">
+      <p ng-if="vm.mediaState.playerState === 5">Connecting...</p>
+      <p ng-if="vm.mediaState.playerState !== 5">Casting to {{vm.activeDevice.friendlyName}}</p>
+    </div>
+    <div class="jw-casting-expanded-controller-seeker">
+      <div class="jw-casting-expanded-controller-seeker-playback">
+        {{vm.mediaState.streamPosition | secondsToDate | date : 'mm:ss'}}
+      </div>
+      <div class="jw-casting-expanded-controller-seeker-bar">
+        <input
+          type="range"
+          name="seek"
+          class="scroll"
+          ng-change="vm.seek()"
+          ng-model="vm.mediaState.streamPosition"
+          min="0"
+          step="1"
+          max="{{vm.mediaInfo.streamDuration}}"
+          ng-model-options="{debounce: 200}">
+      </div>
+      <div class="jw-casting-expanded-controller-seeker-total">
+        -{{vm.mediaInfo.streamDuration | secondsToDate | date : 'mm:ss'}}
+      </div>
+    </div>
+    <div class="jw-casting-expanded-controller-controls">
+      <div class="jw-casting-expanded-controller-control-previous {{vm.mediaState.playingAd || !vm.mediaState.queueHasPreviousItem ? 'jw-controls-disabled' : ''}}">
+        <span class="jwy-icon jwy-icon-skip_previous" ng-click="vm.queuePrevious()"></span>
+      </div>
+      <div
+        class="jw-casting-expanded-controller-control-playpause jwy-icon-stack {{vm.mediaState.playingAd || vm.mediaState.playerState === 5 ? 'jw-controls-disabled' : ''}}"
+        ng-click="vm.playPause()"
+      >
+        <span class="jwy-icon jwy-icon-circle"></span>
+        <span class="jwy-icon {{vm.mediaState.playerState === 3 ? 'jwy-icon-play' : 'jwy-icon-pause'}}"></span>
+      </div>
+      <div class="jw-casting-expanded-controller-control-next {{vm.mediaState.playingAd || !vm.mediaState.queueHasNextItem ? 'jw-controls-disabled' : ''}}">
+        <span class="jwy-icon jwy-icon-skip_next" ng-click="vm.queueNext()"></span>
+      </div>
+      <div class="jw-casting-expanded-controller-control-mute"></div>
+    </div>
+  </div>
+  <div class="backdrop visible active jw-casting-expanded-controller-backdrop"></div>
+</ion-modal-view>

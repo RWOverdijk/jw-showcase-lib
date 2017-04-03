@@ -1,0 +1,13 @@
+<ion-footer-bar align-title="left" class="jw-casting-mini-controller" ng-if="vm.mediaInfo">
+  <img ng-src="{{vm.mediaInfo.image}}" class="jw-casting-mini-controller-cover" ng-click="vm.openExpandedControler()">
+  <div class="item jw-casting-mini-controller-item" ng-click="vm.openExpandedControler()">
+    <h2>{{vm.mediaInfo.title}}</h2>
+    <p>Casting to {{vm.activeDevice.friendlyName}}</p>
+  </div>
+  <div class="jw-casting-mini-controller-control {{vm.mediaState.playingAd || vm.mediaState.playerState === 5 ? 'jw-controls-disabled' : ''}}">
+    <i class="{{vm.mediaState.playerState === 3 ? 'jwy-icon-play' : 'jwy-icon-pause'}} jwy-icon-lg" ng-click="vm.playPause()"></i>
+  </div>
+  <div class="jw-casting-mini-controller-progress">
+    <div class="jw-casting-mini-controller-progress-bar" ng-style="{width: vm.progress + '%'}"></div>
+  </div>
+</ion-footer-bar>

@@ -42,10 +42,10 @@
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
         'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
-        'config', 'feed', 'item'];
+        'config', 'feed', 'item', 'chromecast', 'api'];
     function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
                               FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, config,
-                              feed, item) {
+                              feed, item, chromecast, api) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -59,24 +59,62 @@
             watchProgressItem,
             loadingTimeout;
 
+        vm.chromecast          = chromecast;
         vm.item                = item;
         vm.feed                = feed.clone();
         vm.recommendationsFeed = null;
         vm.loading             = true;
 
-        vm.onComplete     = onComplete;
-        vm.onFirstFrame   = onFirstFrame;
-        vm.onTime         = onTime;
-        vm.onPlaylistItem = onPlaylistItem;
-        vm.onLevels       = onLevels;
-        vm.onReady        = onReady;
-        vm.onError        = onError;
-        vm.onSetupError   = onSetupError;
-        vm.onAdImpression = onAdImpression;
-
+        vm.castToDevice     = castToDevice;
+        vm.onComplete       = onComplete;
+        vm.onFirstFrame     = onFirstFrame;
+        vm.onTime           = onTime;
+        vm.onPlaylistItem   = onPlaylistItem;
+        vm.onLevels         = onLevels;
+        vm.onReady          = onReady;
+        vm.onError          = onError;
+        vm.onSetupError     = onSetupError;
+        vm.onAdImpression   = onAdImpression;
+        vm.queueNext        = queueNext;
+        vm.queuePrevious    = queuePrevious;
         vm.cardClickHandler = cardClickHandler;
 
-        activate();
+        updateCastingState(null, activate);
+
+        function updateCastingState(event, callback) {
+            $timeout(function() {
+                vm.mediaState   = event ? event.detail.status : chromecast.cast.getMediaState();
+                vm.mediaInfo    = vm.mediaState ? vm.mediaState.mediaInformation : null;
+                vm.activeDevice = chromecast.cast.getActiveDevice();
+
+                if (vm.mediaInfo && vm.mediaState && vm.mediaState.streamPosition) {
+                    handleWatchProgress(
+                        vm.mediaState.streamPosition,
+                        vm.mediaInfo.streamDuration,
+                        dataStore.getItem(vm.mediaInfo.mediaid, vm.mediaInfo.feedid)
+                    );
+                }
+
+                if (vm.activeDevice) {
+                    vm.loading = false;
+                }
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
+        }
+
+        function autoCast() {
+            if (player.getState() === 'playing') {
+                castToDevice(lastPos);
+            }
+        }
+
+        document.addEventListener('cast.session.started', autoCast);
+        document.addEventListener('cast.session.resumed', autoCast);
+        document.addEventListener('cast.media.updated', updateCastingState);
+        document.addEventListener('cast.session.changed', updateCastingState);
 
         ////////////////////////
 
@@ -88,11 +126,12 @@
             playerPlaylist = generatePlaylist(itemFeed, item);
 
             vm.playerSettings = {
+
                 width:          '100%',
                 height:         '100%',
                 aspectratio:    '16:9',
                 ph:             4,
-                autostart:      $state.params.autoStart,
+                autostart:      $state.params.autoStart && !vm.activeDevice,
                 playlist:       playerPlaylist,
                 related:        false,
                 preload:        'metadata',
@@ -111,6 +150,12 @@
                 vm.playerSettings.analytics.sdkplatform = ionic.Platform.isAndroid() ? 1 : 2;
             }
 
+            if (vm.activeDevice) {
+                update();
+
+                return;
+            }
+
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
@@ -126,6 +171,9 @@
          * Update controller
          */
         function update () {
+
+            // emit now playing with vm.item.mediaid
+            // listen to now playing media event from chromecast (always)
 
             var itemIndex = itemFeed.playlist.findIndex(byMediaId(vm.item.mediaid));
 
@@ -207,6 +255,7 @@
 
                 return {
                     mediaid:     current.mediaid,
+                    feedid:      current.feedid,
                     title:       current.title,
                     description: current.description,
                     image:       utils.replaceImageSize(current.image, 1920),
@@ -461,21 +510,74 @@
          * @param {number} position
          * @param {number} duration
          */
-        function handleWatchProgress (position, duration) {
+        function handleWatchProgress (position, duration, item) {
+
+            item = item || vm.item;
 
             var progress      = position / duration,
                 minPosition   = Math.min(10, duration * watchProgress.MIN_PROGRESS),
                 maxPosition   = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS),
                 betweenMinMax = position >= minPosition && position < maxPosition;
 
-            if (angular.isNumber(progress) && betweenMinMax && !watchlist.hasItem(vm.item)) {
-                watchProgress.saveItem(vm.item, progress);
+            if (angular.isNumber(progress) && betweenMinMax && !watchlist.hasItem(item)) {
+                watchProgress.saveItem(item, progress);
                 return;
             }
 
-            if (watchProgress.hasItem(vm.item)) {
-                watchProgress.removeItem(vm.item, progress);
+            if (watchProgress.hasItem(item)) {
+                watchProgress.removeItem(item, progress);
             }
+        }
+
+        function queueNext() {
+            chromecast.cast.queueNextItem();
+        }
+
+        function queuePrevious() {
+            chromecast.cast.queuePreviousItem();
+        }
+
+        function castToDevice(startTime) {
+            if (vm.mediaInfo && vm.mediaInfo.mediaid === vm.item.mediaid) {
+                if (vm.mediaState.playerState === 3) {
+                    chromecast.cast.play();
+                } else {
+                    chromecast.cast.pause();
+                }
+
+                return;
+            }
+
+            var castQueue = playerPlaylist.slice(player.getPlaylistIndex() || 0).map(function(item) {
+                var castSource;
+
+                item.sources.forEach(function(source) {
+                    if (source.type !== 'hls' && source.type !== 'video/mp4') {
+                        return;
+                    }
+
+                    if (!castSource || castSource.width < source.width) {
+                        castSource = source;
+                    }
+                });
+
+                return {
+                    startTime: startTime || 0,
+                    type: castSource.type,
+                    url: castSource.file,
+                    metadata: {
+                        title: item.title,
+                        image: item.image
+                    },
+                    customData: {
+                        mediaid: item.mediaid,
+                        feedid: item.feedid,
+                        advertising: jwplayer.defaults.advertising
+                    }
+                };
+            });
+
+            chromecast.cast.queueMedia(castQueue);
         }
 
         /**
@@ -507,19 +609,19 @@
 
             // update itemFeed and playlist when feed is different
             if (vm.item.feedid !== itemFeed.feedid) {
-
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();
 
                 playerPlaylist = generatePlaylist(itemFeed, vm.item);
+
                 player.load(playerPlaylist);
 
-                if (clickedOnPlay || window.cordova) {
+                if ((clickedOnPlay || window.cordova) && !vm.activeDevice) {
                     player.play(true);
                 }
-            }
-            else {
+            } else {
                 playlistIndex = playerPlaylist.findIndex(byMediaId(vm.item.mediaid));
+
                 player.playlistItem(playlistIndex);
             }
 

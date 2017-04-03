@@ -29,6 +29,7 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.chromecast',
             'jwShowcase.video'
         ])
         .value('config', {
