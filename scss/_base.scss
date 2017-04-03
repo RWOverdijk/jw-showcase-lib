@@ -4,10 +4,12 @@
 @import 'compass/css3/animation';
 @import 'compass/css3/images';
 @import 'compass/css3/box-shadow';
+@import 'compass/css3/background-size';
 @import 'compass/css3/box-sizing';
 @import 'compass/css3/flexbox';
 @import 'compass/css3/transform';
 @import 'compass/css3/transition';
+@import 'compass/css3/opacity';
 @import 'compass/css3/user-interface';
 
 //
@@ -34,6 +36,9 @@ $toolbar-hover-color: $primary-color !default;
 
 $search-border-color: #cbced5 !default;
 $search-height: 70px !default;
+
+$overlay-block: rgba(33, 33, 33, .8);
+$top-box-shadow: rgba(0, 0, 0, 0.50);
 
 
 $black: #000;
