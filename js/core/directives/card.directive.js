@@ -43,8 +43,8 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist',
-        'utils'];
-    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils) {
+        'utils', 'chromecast'];
+    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils, chromecast) {
 
         return {
             scope:            {
@@ -60,6 +60,7 @@
             link:             link
         };
 
+
         function link (scope, element) {
 
             scope.vm.showToast = showToast;
@@ -70,6 +71,12 @@
             /////////////
 
             function activate () {
+
+                scope.vm.activeDevice = chromecast.cast.getActiveDevice();
+
+                document.addEventListener('cast.session.changed', function() {
+                    scope.vm.activeDevice = chromecast.cast.getActiveDevice();
+                });
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 

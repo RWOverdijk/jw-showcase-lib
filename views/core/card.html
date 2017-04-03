@@ -10,9 +10,9 @@
         <a class="jw-button jw-card-play-button jw-button-play">
           <i class="jwy-icon jwy-icon-play"></i>
         </a>
-        <div class="jw-card-text jw-card-text-now-playing">Currently playing</div>
+        <div class="jw-card-text jw-card-text-now-playing" ng-if="!vm.activeDevice">Currently playing</div>
       </div>
-      <div class="jw-card-duration jw-card-text"></div>
+      <div class="jw-card-duration jw-card-text" ng-if="!vm.activeDevice"></div>
     </div>
     <div class="jw-card-info">
       <div class="jw-card-watch-progress ng-hide"></div>
