@@ -40,8 +40,10 @@
         this.stop              = playerMethod('stop');
         this.seek              = playerMethod('seek');
         this.playlistItem      = playerMethod('playlistItem');
+        this.getPlaylistIndex  = playerMethod('getPlaylistIndex');
         this.setCurrentQuality = playerMethod('setCurrentQuality');
         this.load              = playerMethod('load');
+        this.getState          = playerMethod('getState');
         this.setPlayer         = setPlayer;
 
         this.paused      = true;
@@ -59,7 +61,7 @@
 
             return function () {
                 if (playerDelegate && angular.isFunction(playerDelegate[method])) {
-                    playerDelegate[method].apply(playerDelegate, Array.prototype.slice.call(arguments));
+                    return playerDelegate[method].apply(playerDelegate, Array.prototype.slice.call(arguments));
                 }
             };
         }
