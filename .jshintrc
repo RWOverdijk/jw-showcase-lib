@@ -19,9 +19,9 @@
     "undef": true,
     "unused": false,
     "strict": false,
-    "maxparams": 20,
+    "maxparams": 100,
     "maxdepth": 5,
-    "maxstatements": 40,
+    "maxstatements": 50,
     "maxcomplexity": 8,
     "maxlen": 120,
     "asi": false,
@@ -54,6 +54,7 @@
     "node": true,
 
     "globals": {
+        "chrome": false,
         "WebVTT": false,
         "angular": false,
         "jwplayer": false,
