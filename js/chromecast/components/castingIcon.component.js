@@ -90,7 +90,7 @@
     }
 
     document.addEventListener('cast.session.changed', function (event) {
-      let state = chromecast.cast.getSessionState();
+      var state = chromecast.cast.getSessionState();
 
       if (state !== self.states.SESSION_STATE_CONNECTING) {
         clearTimeout(swapTimeout);
