@@ -1,7 +1,5 @@
 <div ng-if="vm.devices.length" ng-click="vm.tapIcon()">
   <jw-button class="jw-button-chromecast" tabindex="0">
-    <span class="jw-button-label">Chromecast</span>
-
     <i ng-if="vm.state === vm.states.SESSION_STATE_NOT_CONNECTED" class="jwy-icon jwy-icon-chromecast jwy-icon-sm"></i>
 
     <i ng-if="vm.state === vm.states.SESSION_STATE_CONNECTING" class="jwy-icon jwy-icon-sm jwy-icon-chromecast-connecting-0{{vm.connectingIcon}}"><i class="path1"></i><i class="path2"></i><i class="path3"></i><i class="path4"></i></i>
