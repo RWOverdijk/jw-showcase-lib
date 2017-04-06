@@ -577,7 +577,7 @@
                 };
             });
 
-            chromecast.cast.queueMedia(castQueue);
+            chromecast.cast.queueMedia(castQueue, playerPlaylist.findIndex(byMediaId(vm.item.mediaid)));
         }
 
         /**
@@ -593,8 +593,8 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
-            var playlistIndex,
-                stateParams = $ionicHistory.currentView().stateParams;
+            var playlistIndex = 0;
+            var stateParams = $ionicHistory.currentView().stateParams;
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
