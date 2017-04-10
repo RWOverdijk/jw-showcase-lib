@@ -11,7 +11,7 @@
     }
 
     .jw-casting-header {
-        display: flex;
+        @include display-flex;
         padding: 5px 10px 15px;
 
         .jw-casting-close {
@@ -31,7 +31,7 @@
     .jw-casting-body {
 
         .jw-volume-slider {
-            display: flex;
+            @include display-flex;
             margin-top: 15px;
 
             input {
@@ -72,10 +72,10 @@
 
 .jw-casting-video-container {
     @include background-size(cover);
-    display: flex;
+    @include display-flex;
+    @include align-items(center);
+    @include justify-content(center);
     position: relative;
-    align-items: center;
-    justify-content: center;
     height: 100%;
     color: $white;
     font-size: 20px;
@@ -86,9 +86,9 @@
         background-color: $overlay-block;
 
         span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            @include display-flex;
+            @include align-items(center);
+            @include justify-content(center);
             width: 55px;
             height: 55px;
         }
@@ -114,7 +114,7 @@
     }
 
     .jw-casting-expanded-controller-controls {
-        display: flex;
+        @include display-flex;
         height: 50px;
         margin-top: 25px;
         font-size: 25px;
@@ -124,7 +124,7 @@
         .jw-casting-expanded-controller-control-playpause,
         .jw-casting-expanded-controller-control-next {
             @include flex(1);
-            align-self: center;
+            @include align-self(center);
         }
 
         .jw-casting-expanded-controller-control-playpause {
@@ -157,25 +157,29 @@
     }
 
     .jw-casting-expanded-controller-seeker {
-        display: flex;
+        @include display-flex;
         width: 100%;
         margin-top: 20px;
 
         .jw-casting-expanded-controller-seeker-bar {
-            display: flex;
+            @include display-flex;
             width: 100%;
         }
 
         .jw-casting-expanded-controller-seeker-playback {
+            width: 150px;
             padding: 0 25px;
+            text-align: center;
         }
 
         .jw-casting-expanded-controller-seeker-total {
+            width: 150px;
             padding: 0 25px;
+            text-align: center;
         }
 
         input {
-            align-self: center;
+            @include align-self(center);
             width: 100%;
         }
     }
@@ -187,10 +191,11 @@
     }
 
     ion-header-bar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include display-flex;
+        @include align-items(center);
+        @include justify-content(center);
         height: 60px !important;
+        border-bottom-width: 0;
         background: transparent;
 
         .jwy-icon-angle-down {
