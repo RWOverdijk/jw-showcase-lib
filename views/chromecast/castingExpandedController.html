@@ -1,9 +1,9 @@
-<ion-modal-view class="jw-casting-expanded-controller-modal" ng-style="{backgroundImage: 'url(' + vm.mediaInfo.image + ')'}">
+<div class="jw-casting-expanded-controller-modal" ng-style="{backgroundImage: 'url(' + vm.mediaInfo.image + ')'}">
   <div class="jw-casting-expanded-controller-shadow"></div>
-  <ion-header-bar>
+  <div class="jw-casting-expanded-controller-title">
     <span class="jwy-icon-angle-down" ng-click="vm.hideModal()"></span>
     <h1 class="title">{{vm.mediaInfo.title}}</h1>
-  </ion-header-bar>
+  </div class="jw-casting-expanded-controller-title">
   <div class="jw-casting-expanded-controller-content">
     <div class="jw-casting-expanded-controller-target">
       <p ng-if="vm.mediaState.playerState === 5">Connecting...</p>
@@ -47,4 +47,4 @@
     </div>
   </div>
   <div class="backdrop visible active jw-casting-expanded-controller-backdrop"></div>
-</ion-modal-view>
+</div>

@@ -8,12 +8,10 @@
       templateUrl:  'views/chromecast/castingIcon.html'
     });
 
-  CastingIconController.$inject = ['chromecast', '$scope', '$q', '$ionicPopup'];
+  CastingIconController.$inject = ['chromecast', '$scope', '$q', 'popup', '$timeout'];
 
-  function CastingIconController(chromecast, $scope, $q, $ionicPopup) {
-    this.devices        = chromecast.devices;
-    this.states         = chromecast.states;
-    this.state          = chromecast.cast.getSessionState();
+  function CastingIconController(chromecast, $scope, $q, popup, $timeout) {
+    this.state          = 0;
     this.volume         = 0;
     this.activeDevice   = null;
     this.connectingIcon = '1';
@@ -25,21 +23,27 @@
     var self = this;
     var swapTimeout;
 
+    document.addEventListener("deviceready", function () {
+      $timeout(function() {
+        self.states = chromecast.states;
+        self.devices = chromecast.devices;
 
-    chromecast.cast.getDevices().then(function(devices) {
-      if (devices.length) {
-        self.devices = devices;
-      }
-    });
+        chromecast.cast.getDevices().then(function(devices) {
+          if (devices.length) {
+            self.devices = devices;
+          }
+        });
+      }, 20);
+    }, false);
 
-    this.chooseDevice = function(uniqueID) {
+    this.chooseDevice = function(deviceObject) {
       if (self.castingModal) {
         self.castingModal.close();
 
         self.castingModal = null;
       }
 
-      chromecast.cast.selectDevice(uniqueID);
+      chromecast.cast.selectDevice(deviceObject);
     };
 
     this.closePopup = function() {
@@ -70,7 +74,7 @@
       var defer = $q.defer();
       self.castingDialogTitle = self.activeDevice ? self.activeDevice.friendlyName : 'Cast to';
 
-      self.castingModal = $ionicPopup.show({
+      self.castingModal = popup.open({
         cssClass: 'jw-casting-modal',
         scope: $scope,
         templateUrl: 'views/chromecast/castingDeviceList.html'

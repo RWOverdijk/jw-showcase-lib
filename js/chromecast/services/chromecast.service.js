@@ -6,14 +6,17 @@
   chromecast.$inject = [];
 
   function chromecast() {
-    var Chromecast = chrome.cast.Chromecast;
-    var cast       = new Chromecast('12549FA5');
-    var self       = this;
+    var self = this;
 
-    this.cast    = cast;
-    this.devices = cast.getDeviceList();
-    this.states  = Chromecast.constants;
+    document.addEventListener("deviceready", function () {
+      var Chromecast = chrome.cast.Chromecast;
+      var cast       = new Chromecast('12549FA5'); // @todo change to EF46CC40
 
-    cast.init();
+      self.cast    = cast;
+      self.devices = cast.getDeviceList();
+      self.states  = Chromecast.constants;
+
+      cast.init();
+    }, false);
   }
 })();

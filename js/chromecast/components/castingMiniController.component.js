@@ -8,9 +8,9 @@
       templateUrl:  'views/chromecast/castingMiniController.html'
     });
 
-  CastingMiniControllerController.$inject = ['chromecast', '$scope', '$ionicModal', '$timeout'];
+  CastingMiniControllerController.$inject = ['chromecast', '$scope', 'popup', '$timeout'];
 
-  function CastingMiniControllerController(chromecast, $scope, $ionicModal, $timeout) {
+  function CastingMiniControllerController(chromecast, $scope, popup, $timeout) {
     this.mediaState   = null;
     this.mediaInfo    = null;
     this.activeDevice = null;
@@ -19,12 +19,9 @@
     var self = this;
 
     this.openExpandedControler = function() {
-      $ionicModal.fromTemplateUrl('views/chromecast/castingExpandedController.html', {
+      self.modal = popup.open({
         scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        self.modal = modal;
-        self.modal.show();
+        templateUrl: 'views/chromecast/castingExpandedController.html'
       });
     };
 
@@ -33,7 +30,7 @@
         return;
       }
 
-      self.modal.hide();
+      self.modal.close();
     };
 
     this.queueNext = function() {

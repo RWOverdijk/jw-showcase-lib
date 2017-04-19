@@ -1,42 +1,44 @@
-<div class="jw-casting-header">
-  <strong class="jw-casting-title">{{vm.castingDialogTitle}}</strong>
-  <span class="jw-casting-close" ng-click="vm.closePopup()">&times;</span>
-</div>
+<div class="jw-casting-modal jw-popup">
+  <div class="jw-casting-header">
+    <strong class="jw-casting-title">{{vm.castingDialogTitle}}</strong>
+    <span class="jw-casting-close" ng-click="vm.closePopup()">&times;</span>
+  </div>
 
-<div class="list" ng-if="vm.devices.length && vm.state === vm.states.SESSION_STATE_NOT_CONNECTED">
-  <a class="item" ng-repeat="device in vm.devices" ng-click="vm.chooseDevice(device)">
-    <h2>{{device.friendlyName}}</h2>
-    <p>{{device.statusText}}</p>
-  </a>
-</div>
+  <div class="jw-casting-list" ng-if="vm.devices.length && vm.state === vm.states.SESSION_STATE_NOT_CONNECTED">
+    <a class="item" ng-repeat="device in vm.devices" ng-click="vm.chooseDevice(device)">
+      <h2 class="jw-casting-list-device-name">{{device.friendlyName}}</h2>
+      <p class="jw-casting-list-device-state">{{device.statusText}}</p>
+    </a>
+  </div>
 
-<div class="list" ng-if="vm.devices.length && vm.state === vm.states.SESSION_STATE_CONNECTED">
-  <div class="jw-casting-body">
-    <div class="jw-casting-cover-container" ng-if="vm.mediaInfo">
-      <img ng-src="{{vm.mediaInfo.image}}" class="jw-casting-cover">
-    </div>
-
-    <div class="jw-casting-controls">
-
-      <span ng-if="!vm.mediaInfo">No media selected</span>
-      <span ng-if="vm.mediaInfo">
-        {{vm.mediaInfo.title}}
-      </span>
-
-      <i
-        ng-if="vm.mediaInfo"
-        class="jw-casting-control {{vm.mediaState.playerState === 3 ? 'jwy-icon-play' : 'jwy-icon-pause'}} jwy-icon-lg {{vm.mediaState.playingAd || vm.mediaState.playerState === 5 ? 'jw-controls-disabled' : ''}}"
-        ng-click="vm.playPause()"
-      ></i>
-
-      <div class="jw-volume-slider">
-        <i class="jwy-icon-audiotrack jwy-icon-lg"></i>
-        <input type="range" name="volume" ng-change="vm.changeVolume()" ng-model="vm.volume" min="0" max="100" ng-model-options="{debounce: 200}">
+  <div class="list" ng-if="vm.devices.length && vm.state === vm.states.SESSION_STATE_CONNECTED">
+    <div class="jw-casting-body">
+      <div class="jw-casting-cover-container" ng-if="vm.mediaInfo">
+        <img ng-src="{{vm.mediaInfo.image}}" class="jw-casting-cover">
       </div>
+
+      <div class="jw-casting-controls">
+
+        <span ng-if="!vm.mediaInfo">No media selected</span>
+        <span ng-if="vm.mediaInfo">
+          {{vm.mediaInfo.title}}
+        </span>
+
+        <i
+          ng-if="vm.mediaInfo"
+          class="jw-casting-control {{vm.mediaState.playerState === 3 ? 'jwy-icon-play' : 'jwy-icon-pause'}} jwy-icon-lg {{vm.mediaState.playingAd || vm.mediaState.playerState === 5 ? 'jw-controls-disabled' : ''}}"
+          ng-click="vm.playPause()"
+        ></i>
+
+        <div class="jw-volume-slider">
+          <i class="jwy-icon-audiotrack jwy-icon-lg"></i>
+          <input type="range" name="volume" ng-change="vm.changeVolume()" ng-model="vm.volume" min="0" max="100" ng-model-options="{debounce: 200}">
+        </div>
+      </div>
+      <!-- Button, stop casting, aligned right -->
+      <button class="button button-clear button-small jw-button-casting" ng-click="vm.stopCasting()">
+        STOP CASTING
+      </button>
     </div>
-    <!-- Button, stop casting, aligned right -->
-    <button class="button button-clear button-small jw-button-casting" ng-click="vm.stopCasting()">
-      STOP CASTING
-    </button>
   </div>
 </div>
