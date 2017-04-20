@@ -1,17 +1,17 @@
 .jw-casting-modal {
-    padding: 10px;
     width: 250px;
+    padding: 10px;
 
     .popup-head {
         display: none;
     }
 
     .jw-button-casting {
-        background: transparent;
-        font-size: 0.80em;
         margin-top: 15px;
         float: right;
+        background: transparent;
         color: $primary-color !important;
+        font-size: 0.80em;
         text-align: right;
     }
 
@@ -37,15 +37,15 @@
 
     .jw-casting-list {
         .jw-casting-list-device-state {
-            font-size: 0.9em;
             padding-left: 5px;
+            font-size: 0.9em;
             font-weight: lighter;
         }
 
         .jw-casting-list-device-name {
+            padding-left: 5px;
             font-size: 1em;
             font-weight: normal;
-            padding-left: 5px;
         }
     }
 
@@ -73,12 +73,12 @@
         }
 
         .jw-casting-controls {
-            font-size: 0.80em;
             margin-right: -10px;
             margin-left: -10px;
             padding: 15px;
             background: $inverse-color;
             color: $white;
+            font-size: 0.80em;
 
             .jw-casting-control {
                 float: right;
@@ -119,12 +119,11 @@
 
 .jw-casting-expanded-controller-modal {
     @include background-size(cover);
-    background-color: hotpink;
     position: absolute;
-    left: 0;
-    right: 0;
     top: 0;
+    right: 0;
     bottom: 0;
+    left: 0;
     color: $white;
 
     .jw-casting-expanded-controller-title {
@@ -146,14 +145,14 @@
 
         h1 {
             position: absolute;
+            top: 0;
             right: 0 !important;
             left: 0 !important;
-            top: 0;
-            font-size: 1.1em;
             height: 60px !important;
             margin: 0 !important;
-            text-align: center;
+            font-size: 1.1em;
             line-height: 60px !important;
+            text-align: center;
             text-overflow: ellipsis !important;
         }
     }
@@ -251,14 +250,14 @@
 }
 
 .jw-casting-mini-controller {
+    @include display-flex;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
     height: 65px !important;
     padding: 0 !important;
     background: $light-color;
-    @include display-flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
 
     .jw-casting-mini-controller-progress {
         position: absolute;
@@ -282,15 +281,15 @@
         font-size: 16px;
 
         h2 {
-            font-size: 14px !important;
             margin-top: 15px;
             margin-bottom: 5px;
+            font-size: 14px !important;
         }
 
         p {
-            font-size: 12px !important;
             margin: 0;
             padding: 0;
+            font-size: 12px !important;
         }
     }
 

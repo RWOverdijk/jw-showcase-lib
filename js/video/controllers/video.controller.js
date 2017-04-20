@@ -42,8 +42,11 @@
      * @requires jwShowcase.chromecast.chromecast
      */
 
-    VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
-        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'config', 'feed', 'item', 'chromecast'];
+    VideoController.$inject = [
+        '$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'config', 'feed', 'item',
+        'chromecast'
+    ];
     function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
                               watchlist, seo, userSettings, utils, player, platform, config, feed, item, chromecast) {
 
@@ -85,7 +88,12 @@
             $timeout(function() {
                 vm.mediaState   = event ? event.detail.status : chromecast.cast.getMediaState();
                 vm.mediaInfo    = vm.mediaState ? vm.mediaState.mediaInformation : null;
-                vm.activeDevice = event ? event.detail.device : chromecast.cast.getActiveDevice();
+
+                if (event && event.detail && event.detail.device) {
+                    vm.activeDevice = event.detail.device;
+                } else {
+                    vm.activeDevice = chromecast.cast.getActiveDevice();
+                }
 
                 if (vm.mediaInfo && vm.mediaState && vm.mediaState.streamPosition) {
                     handleWatchProgress(

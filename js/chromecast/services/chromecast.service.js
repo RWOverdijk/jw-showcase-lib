@@ -8,7 +8,7 @@
   function chromecast() {
     var self = this;
 
-    document.addEventListener("deviceready", function () {
+    document.addEventListener('deviceready', function () {
       var Chromecast = chrome.cast.Chromecast;
       var cast       = new Chromecast('12549FA5'); // @todo change to EF46CC40
 

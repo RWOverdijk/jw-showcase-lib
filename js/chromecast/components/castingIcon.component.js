@@ -23,7 +23,7 @@
     var self = this;
     var swapTimeout;
 
-    document.addEventListener("deviceready", function () {
+    document.addEventListener('deviceready', function () {
       $timeout(function() {
         self.states = chromecast.states;
         self.devices = chromecast.devices;
